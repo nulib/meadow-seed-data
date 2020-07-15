@@ -1,0 +1,13 @@
+{
+  "name": "meadow-seed-data",
+  "version": "0.1.0",
+  "description": "Generate seed data for Meadow",
+  "main": "index.js",
+  "repository": "https://github.com/nulib/meadow-seed-data",
+  "author": "MBK & BQ",
+  "license": "MIT",
+  "private": false,
+  "dependencies": {
+    "node-fetch": "2.6.0"
+  }
+}
