@@ -1,6 +1,9 @@
 const { convertArrayToCSV } = require("convert-array-to-csv");
 const fetch = require("node-fetch");
+const fs = require("fs");
+
 const baseUrl = process.env.ELASTICSEARCH_BASE;
+const iiifBase = "https://iiif.stack.rdc.library.northwestern.edu/iiif/2";
 
 class DCExport {
   constructor(collectionId, size) {
@@ -9,8 +12,11 @@ class DCExport {
   }
 
   async makeCsv() {
+    if (!fs.existsSync(this.collectionId)) {
+      fs.mkdirSync(this.collectionId);
+    }
     let data = await this.fetchCollectionData();
-    return convertArrayToCSV(data, {
+    let csv = convertArrayToCSV(data, {
       header: [
         "work_accession_number",
         "accession_number",
@@ -19,6 +25,8 @@ class DCExport {
         "role",
       ],
     });
+    fs.writeFileSync(`${this.collectionId}.csv`, csv);
+    return `${this.collectionId}.csv`;
   }
 
   async fetchCollectionData() {
@@ -70,10 +78,19 @@ class DCExport {
         let response = await fetch(`${baseUrl}common/_doc/${fileSetId}`);
         let fileSet = await response.json();
         let info = fileSet._source;
+        let imageFilename = `${this.collectionId}/${info.label.replace(
+          ".tif",
+          ".jpg"
+        )}`;
+
+        fetch(`${iiifBase}/${fileSetId}/full/!2048,2048/0/default.jpg`)
+          .then((response) => response.buffer())
+          .then((imageData) => fs.writeFile(imageFilename, imageData, () => {}))
+          .catch((err) => console.error(err));
         return [
           workAccessionNumber,
           `${workAccessionNumber}_FILE_${index}`,
-          `${this.collectionId}/${info.label}`,
+          imageFilename,
           info.label,
           "AM",
         ];
