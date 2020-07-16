@@ -8,7 +8,9 @@
   "license": "MIT",
   "private": false,
   "dependencies": {
+    "cli-progress": "3.8.2",
     "convert-array-to-csv": "2.0.0",
-    "node-fetch": "2.6.0"
+    "node-fetch": "2.6.0",
+    "promise-retry": "2.0.1"
   }
 }
