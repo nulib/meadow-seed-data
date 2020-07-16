@@ -2,6 +2,13 @@
 
 const exporter = require("../lib/dcExport");
 
+if (!process.env.ELASTICSEARCH_BASE) {
+  console.error(
+    "ELASTICSEARCH_BASE environment variable is not set, exiting..."
+  );
+  process.exit();
+}
+
 exporter(process.argv[2], process.argv[3]).then((data) =>
   console.log(`Ingest sheet written to ${data}`)
 );
