@@ -2,6 +2,6 @@
 
 const exporter = require("../lib/dcExport");
 
-exporter(process.argv[2], process.argv[3]).then((data) =>
+exporter(...process.argv.slice(2,)).then((data) =>
   console.log(`Ingest sheet written to ${data}`)
 );
